@@ -25,9 +25,10 @@ import {
 } from "@/components/ui/form";
 import { registerSchema } from "../schema";
 import { useRegister } from "../api/use-register";
+import { Loader2 } from "lucide-react";
 type FromSchema = z.infer<typeof registerSchema>;
 const SignUpCard = () => {
-  const { mutate } = useRegister();
+  const { mutate, isPending } = useRegister();
   const form = useForm<FromSchema>({
     defaultValues: {
       name: "",
@@ -107,8 +108,8 @@ const SignUpCard = () => {
                 </FormItem>
               )}
             />
-            <Button disabled={false} size={"lg"} className="w-full">
-              Signup
+            <Button disabled={isPending} size={"lg"} className="w-full">
+              {isPending ? <Loader2 className="size-1 animate-spin" /> : <>Signup</>}
             </Button>
           </form>
         </Form>

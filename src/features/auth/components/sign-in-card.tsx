@@ -19,9 +19,10 @@ import {
 import Link from "next/link";
 import { loginSchema } from "../schema";
 import { useLogin } from "../api/use-login";
+import { Loader2 } from "lucide-react";
 type FromSchema = z.infer<typeof loginSchema>;
 const SignInCard = () => {
-  const { mutate } = useLogin();
+  const { mutate, isPending } = useLogin();
   const form = useForm<FromSchema>({
     defaultValues: {
       email: "",
@@ -80,8 +81,8 @@ const SignInCard = () => {
                 </FormItem>
               )}
             />
-            <Button disabled={false} size={"lg"} className="w-full">
-              Login
+            <Button disabled={isPending} size={"lg"} className="w-full">
+              {isPending ? <Loader2 className="size-1 animate-spin" /> : <>Login</>}
             </Button>
           </form>
         </Form>
