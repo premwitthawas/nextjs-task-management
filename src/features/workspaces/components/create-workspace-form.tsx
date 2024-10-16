@@ -1,20 +1,25 @@
-'use client';
-import React, { useRef } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { createWorkSpacesSchema } from '@/features/workspaces/schema'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import DottedSepeartor from '@/components/dotted-separator'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useCreateWorkspace } from '@/features/workspaces/api/use-create-workspace';
-import Image from 'next/image';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ImageIcon, Loader2Icon } from 'lucide-react';
-
-type CreateWorkSpaceFormSchema = z.infer<typeof createWorkSpacesSchema>
+"use client";
+import React, { useRef } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { createWorkSpacesSchema } from "@/features/workspaces/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import DottedSepeartor from "@/components/dotted-separator";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useCreateWorkspace } from "@/features/workspaces/api/use-create-workspace";
+import Image from "next/image";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ImageIcon, Loader2Icon } from "lucide-react";
 
 interface Props {
   onCancle?: () => void;
@@ -23,19 +28,20 @@ interface Props {
 const CreateWorkSpaceForm = ({ onCancle }: Props) => {
   const { mutate: createWorkspaceHandle, isPending } = useCreateWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
-  const form = useForm<CreateWorkSpaceFormSchema>({
+  const form = useForm<z.infer<typeof createWorkSpacesSchema>>({
     defaultValues: {
-      name: ''
+      name: "",
     },
     resolver: zodResolver(createWorkSpacesSchema),
-  })
-  const onSubmitHandle = (values: CreateWorkSpaceFormSchema) => {
+  });
+  const onSubmitHandle = (values: z.infer<typeof createWorkSpacesSchema>) => {
     const data = {
       form: {
         name: values.name,
-        image: values.image instanceof File ? values.image : ''
-      }
-    }
+        image: values.image instanceof File ? values.image : "",
+        filename: values.image instanceof File ? values.image.name : ""
+      },
+    };
     createWorkspaceHandle(data);
   };
 
@@ -44,29 +50,29 @@ const CreateWorkSpaceForm = ({ onCancle }: Props) => {
     if (file) {
       form.setValue("image", file);
     }
-  }
+  };
   return (
-    <Card className='w-full h-full border-none shadow-none'>
-      <CardHeader className='flex p-7'>
-        <CardTitle className='text-xl font-bold'>
+    <Card className="w-full h-full border-none shadow-none">
+      <CardHeader className="flex p-7">
+        <CardTitle className="text-xl font-bold">
           Create a new workspace
         </CardTitle>
       </CardHeader>
-      <div className='p-7'>
+      <div className="p-7">
         <DottedSepeartor />
       </div>
-      <CardContent className='p-7'>
+      <CardContent className="p-7">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmitHandle)}>
-            <div className='flex flex-col gap-y-4'>
+            <div className="flex flex-col gap-y-4">
               <FormField
                 control={form.control}
-                name='name'
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Workspace Name</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder='Enter workspace name' />
+                      <Input {...field} placeholder="Enter workspace name" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -74,46 +80,48 @@ const CreateWorkSpaceForm = ({ onCancle }: Props) => {
               />
               <FormField
                 control={form.control}
-                name='image'
+                name="image"
                 render={({ field }) => (
-                  <div className='flex flex-col gap-y-2'>
-                    <div className='flex items-center gap-x-5'>
-                      {
-                        field.value ? (
-                          <div className='size-[72px] relative rounded-md overflow-hidden'>
-                            <Image
-                              src={
-                                field.value instanceof File ? URL.createObjectURL(field.value) : field.value
-                              }
-                              className='object-cover'
-                              fill
-                              alt='Logo' />
-                          </div>
-                        ) : (
-                          <Avatar className='size-[72px]'>
-                            <AvatarFallback>
-                              <ImageIcon className='size-[36px] text-neutral-400' />
-                            </AvatarFallback>
-                          </Avatar>
-                        )}
-                      <div className='flex flex-col'>
-                        <p className='text-sm'>Workspace Icon</p>
-                        <p className='text-sm text-muted-foreground'>
+                  <div className="flex flex-col gap-y-2">
+                    <div className="flex items-center gap-x-5">
+                      {field.value ? (
+                        <div className="size-[72px] relative rounded-md overflow-hidden">
+                          <Image
+                            src={
+                              field.value instanceof File
+                                ? URL.createObjectURL(field.value)
+                                : field.value
+                            }
+                            className="object-cover"
+                            fill
+                            alt="Logo"
+                          />
+                        </div>
+                      ) : (
+                        <Avatar className="size-[72px]">
+                          <AvatarFallback>
+                            <ImageIcon className="size-[36px] text-neutral-400" />
+                          </AvatarFallback>
+                        </Avatar>
+                      )}
+                      <div className="flex flex-col">
+                        <p className="text-sm">Workspace Icon</p>
+                        <p className="text-sm text-muted-foreground">
                           PNG, JPG, JPEG or SVG
                         </p>
-                        <input
-                          className='hidden'
-                          type='file'
-                          accept='.jpg, .png, .jpeg, .svg'
+                        <Input
+                          className="hidden"
+                          type="file"
+                          accept=".jpg, .png, .jpeg, .svg"
                           ref={inputRef}
                           onChange={handleImageChage}
                         />
                         <Button
-                          type='button'
+                          type="button"
                           disabled={isPending}
-                          size={'xs'}
-                          variant={'teritrary'}
-                          className='w-fit mt-2'
+                          size={"xs"}
+                          variant={"teritrary"}
+                          className="w-fit mt-2"
                           onClick={() => inputRef.current?.click()}
                         >
                           Upload Image
@@ -124,18 +132,30 @@ const CreateWorkSpaceForm = ({ onCancle }: Props) => {
                 )}
               />
             </div>
-            <DottedSepeartor className='py-7' />
-            <div className='flex items-center justify-between'>
-              <Button type='button' disabled={isPending} size={'lg'} variant={'secondary'} onClick={onCancle}>Cancel</Button>
-              <Button type='submit' disabled={isPending} size={'lg'}>
-                {isPending ? <Loader2Icon className='size-4 animate-spin' /> : 'Create Workspace'}
+            <DottedSepeartor className="py-7" />
+            <div className="flex items-center justify-between">
+              <Button
+                type="button"
+                disabled={isPending}
+                size={"lg"}
+                variant={"secondary"}
+                onClick={onCancle}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isPending} size={"lg"}>
+                {isPending ? (
+                  <Loader2Icon className="size-4 animate-spin" />
+                ) : (
+                  "Create Workspace"
+                )}
               </Button>
             </div>
           </form>
         </Form>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default CreateWorkSpaceForm
+export default CreateWorkSpaceForm;

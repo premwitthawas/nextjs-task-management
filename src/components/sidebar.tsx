@@ -2,8 +2,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import DottedSepeartor from "./dotted-separator";
-import Navigiation from "./navigation";
+import DottedSepeartor from "@/components/dotted-separator";
+import Navigiation from "@/components/navigation";
+import WorkspaceSwitcher from "@/components/workspace-switcher";
 
 
 const Sidebar = () => {
@@ -12,6 +13,8 @@ const Sidebar = () => {
       <Link href="/" className="flex items-center justify-center">
         <Image src={"/logo.svg"} alt="logo" width={164} height={48} />
       </Link>
+      <DottedSepeartor className="my-4" />
+      <WorkspaceSwitcher />
       <DottedSepeartor className="my-4" />
       <Navigiation />
     </aside>
