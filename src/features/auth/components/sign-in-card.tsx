@@ -82,7 +82,7 @@ const SignInCard = () => {
               )}
             />
             <Button disabled={isPending} size={"lg"} className="w-full">
-              {isPending ? <Loader2 className="size-1 animate-spin" /> : <>Login</>}
+              {isPending ? <Loader2 className="size-4 animate-spin" /> : <>Login</>}
             </Button>
           </form>
         </Form>
