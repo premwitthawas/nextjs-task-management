@@ -109,7 +109,7 @@ const SignUpCard = () => {
               )}
             />
             <Button disabled={isPending} size={"lg"} className="w-full">
-              {isPending ? <Loader2 className="size-1 animate-spin" /> : <>Signup</>}
+              {isPending ? <Loader2 className="size-4 animate-spin" /> : <>Signup</>}
             </Button>
           </form>
         </Form>

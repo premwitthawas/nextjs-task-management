@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { createWorkSpacesSchema } from "@/features/workspaces/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DottedSepeartor from "@/components/dotted-separator";
 import {
@@ -20,12 +21,14 @@ import { useCreateWorkspace } from "@/features/workspaces/api/use-create-workspa
 import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImageIcon, Loader2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   onCancle?: () => void;
 }
 
 const CreateWorkSpaceForm = ({ onCancle }: Props) => {
+  const router = useRouter();
   const { mutate: createWorkspaceHandle, isPending } = useCreateWorkspace();
   const inputRef = useRef<HTMLInputElement>(null);
   const form = useForm<z.infer<typeof createWorkSpacesSchema>>({
@@ -42,7 +45,13 @@ const CreateWorkSpaceForm = ({ onCancle }: Props) => {
         filename: values.image instanceof File ? values.image.name : ""
       },
     };
-    createWorkspaceHandle(data);
+    createWorkspaceHandle(data, {
+      onSuccess: ({ data }) => {
+        form.reset();
+        // onCancle?.();
+        router.push(`/workspaces/${data.$id}`);
+      }
+    });
   };
 
   const handleImageChage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,16 +125,34 @@ const CreateWorkSpaceForm = ({ onCancle }: Props) => {
                           ref={inputRef}
                           onChange={handleImageChage}
                         />
-                        <Button
-                          type="button"
-                          disabled={isPending}
-                          size={"xs"}
-                          variant={"teritrary"}
-                          className="w-fit mt-2"
-                          onClick={() => inputRef.current?.click()}
-                        >
-                          Upload Image
-                        </Button>
+                        {
+                          field.value ? (<Button
+                            type="button"
+                            disabled={isPending}
+                            size={"xs"}
+                            variant={"destructive"}
+                            className="w-fit mt-2"
+                            onClick={() => {
+                              field.onChange(null)
+                              if (inputRef.current) {
+                                inputRef.current.value = ""
+                              }
+                            }}
+                          >
+                            Remove Image
+                          </Button>) : (
+                            <Button
+                              type="button"
+                              disabled={isPending}
+                              size={"xs"}
+                              variant={"teritrary"}
+                              className="w-fit mt-2"
+                              onClick={() => inputRef.current?.click()}
+                            >
+                              Upload Image
+                            </Button>
+                          )
+                        }
                       </div>
                     </div>
                   </div>
@@ -140,6 +167,7 @@ const CreateWorkSpaceForm = ({ onCancle }: Props) => {
                 size={"lg"}
                 variant={"secondary"}
                 onClick={onCancle}
+                className={cn(!onCancle && 'invisible')}
               >
                 Cancel
               </Button>
