@@ -5,7 +5,11 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { ID, Query } from "node-appwrite";
 import { z } from "zod";
-import { createProjectSchema } from "../schema";
+import {
+  createProjectSchema,
+  updateProjectSchema,
+} from "@/features/projects/schema";
+import { Project } from "@/features/projects/types";
 const app = new Hono()
   .get(
     "/",
@@ -81,6 +85,66 @@ const app = new Hono()
         {
           name,
           workspaceId: workspaceId,
+          imageUrl: uploadImageUrl,
+        }
+      );
+      return c.json({ data: project });
+    }
+  )
+  .patch(
+    "/:projectId",
+    sessionMiddleware,
+    zValidator("form", updateProjectSchema),
+    async (c) => {
+      const databases = c.get("databases");
+      const storage = c.get("storage");
+      const user = c.get("user");
+      const projectId = c.req.param("projectId");
+      const { filename, image, name } = c.req.valid("form");
+
+      const existingProject = await databases.getDocument<Project>(
+        DATABASE_ID,
+        PROJECTS_ID,
+        projectId
+      );
+
+      const member = await getMember({
+        databases,
+        userId: user.$id,
+        workspaceId: existingProject.workspaceId,
+      });
+
+      if (!member) {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+
+      let uploadImageUrl: string | undefined;
+      if (image instanceof Blob) {
+        const buffer = Buffer.from(await image.arrayBuffer());
+        const newFile = new File([buffer], filename as string, {
+          type: image.type,
+        });
+        const file = await storage.createFile(
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          newFile
+        );
+        const arrayBuffer = await storage.getFilePreview(
+          IMAGES_BUCKET_ID,
+          file.$id
+        );
+        uploadImageUrl = `data:${image.type};base64,${Buffer.from(
+          arrayBuffer
+        ).toString("base64")}`;
+      } else {
+        uploadImageUrl = image;
+      }
+      const project = await databases.updateDocument(
+        DATABASE_ID,
+        PROJECTS_ID,
+        projectId,
+        {
+          name,
           imageUrl: uploadImageUrl,
         }
       );
