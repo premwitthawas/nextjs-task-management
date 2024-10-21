@@ -1,7 +1,7 @@
 'use client';
 import ResponsiveMoal from '@/components/responsive-modal'
-import CreateWorkSpaceForm from './create-workspace-form'
-import { useCreateWorkspaceModal } from '../hooks/use-workspace-create-modal';
+import CreateWorkSpaceForm from '@/features/workspaces/components/create-workspace-form'
+import { useCreateWorkspaceModal } from '@/features/workspaces/hooks/use-workspace-create-modal';
 
 const CreateWorkspaceModal = () => {
     const { isOpen, setIsOpen, close } = useCreateWorkspaceModal();
