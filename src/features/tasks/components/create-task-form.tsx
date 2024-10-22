@@ -20,6 +20,9 @@ import { Loader2Icon } from "lucide-react";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { useCreateTask } from "@/features/tasks/api/use-create-task";
 import { createTaskSchema } from "@/features/tasks//schema";
+import DatePicker from "@/components/date-picker";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import MemberAvatar from "@/features/member/components/members-avatar";
 
 interface Props {
     onCancle?: () => void;
@@ -27,7 +30,7 @@ interface Props {
     memberOptions: { id: string, name: string, }[];
 }
 
-const CreateTaskForm = ({ onCancle }: Props) => {
+const CreateTaskForm = ({ onCancle, memberOptions, projectOptions }: Props) => {
     const workspaceId = useWorkspaceId();
     const { mutate: createTaskHandle, isPending } = useCreateTask();
     const form = useForm<z.infer<typeof createTaskSchema>>({
@@ -75,16 +78,44 @@ const CreateTaskForm = ({ onCancle }: Props) => {
                                     </FormItem>
                                 )}
                             />
-                             <FormField
+                            <FormField
                                 control={form.control}
-                                name="name"
+                                name="dueDate"
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>Due Date</FormLabel>
                                         <FormControl>
-                                            <Input {...field} placeholder="Enter duedate" />
+                                            <DatePicker {...field} />
                                         </FormControl>
                                         <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="assigneeId"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Assignee</FormLabel>
+                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <FormControl>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="select assignee" />
+                                                </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                                {
+                                                    memberOptions.map((member) => {
+                                                        return <SelectItem value={member.id} key={member.id}>
+                                                            <div className="flex items-center gap-x-2">
+                                                                <MemberAvatar className="size-6" name={member.name} />
+                                                                {member.name}
+                                                            </div>
+                                                        </SelectItem>
+                                                    })
+                                                }
+                                            </SelectContent>
+                                        </Select>
                                     </FormItem>
                                 )}
                             />
