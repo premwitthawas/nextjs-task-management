@@ -4,6 +4,7 @@ import auth from "@/features/auth/server/route";
 import workspaces from "@/features/workspaces/server/route";
 import members from "@/features/member/server/route";
 import projects from "@/features/projects/server/route";
+import tasks from "@/features/tasks/server/route";
 export const runtime = "edge";
 
 const app = new Hono().basePath("/api");
@@ -15,7 +16,8 @@ const routers = app
   .route("/auth", auth)
   .route("/workspaces", workspaces)
   .route("/members", members)
-  .route("/projects", projects);
+  .route("/projects", projects)
+  .route("/tasks", tasks);
 export const GET = handle(app);
 export const POST = handle(app);
 export const PATCH = handle(app);

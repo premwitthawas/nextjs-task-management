@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { getCurrent } from '@/features/auth/queries'
 import ProjectAvatar from '@/features/projects/components/project-avatar'
 import { getProjectById } from '@/features/projects/queries'
+import TaskSwitcher from '@/features/tasks/components/task-switcher'
 import { PencilIcon } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -36,6 +37,8 @@ const ProjectIdPage = async ({ params }: Props) => {
                     </Button>
                 </div>
             </div>
+            {/* TASKVIEW */}
+            <TaskSwitcher />
         </div>
     )
 }
