@@ -19,18 +19,18 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ImageIcon, Loader2Icon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useCreateProject } from "@/features/projects/api/use-create-project";
 import { createProjectSchema } from "@/features/projects/schema";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { useRouter } from "next/navigation";
 
 interface Props {
     onCancle?: () => void;
 }
 
 const CreateProjectForm = ({ onCancle }: Props) => {
-    const router = useRouter();
     const workspaceId = useWorkspaceId();
+    const router = useRouter();
     const { mutate: createProjectHandle, isPending } = useCreateProject();
     const inputRef = useRef<HTMLInputElement>(null);
     const form = useForm<z.infer<typeof createProjectSchema>>({
@@ -49,7 +49,7 @@ const CreateProjectForm = ({ onCancle }: Props) => {
             onSuccess: ({ data }) => {
                 form.reset();
                 // onCancle?.();
-                // router.push(`/workspaces/${workspaceId}/project/${data.$id}`);
+                router.push(`/workspaces/${workspaceId}/projects/${data.$id}`);
             }
         });
     };

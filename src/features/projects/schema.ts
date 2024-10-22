@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const createProjectSchema = z.object({
   workspaceId: z.string(),
-  name: z.string().trim().min(1, "Name Workspace is Required."),
+  name: z.string().trim().min(1, "Name Project is Required."),
   image:
     typeof window === "undefined"
       ? z.any().optional()
@@ -11,10 +11,7 @@ export const createProjectSchema = z.object({
 });
 
 export const updateProjectSchema = z.object({
-  name: z.string().trim().min(1, "Name Workspace is Required.").optional(),
-  image:
-    typeof window === "undefined"
-      ? z.any().optional()
-      : z.instanceof(File).optional(),
-  filename: z.string().optional(),
+  name: z.string().trim().min(1, "Name Project is Required.").optional(),
+  image: z.any().optional(),
+  filename: z.string().optional()
 });
