@@ -18,8 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2Icon } from "lucide-react";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
-import { useCreateTask } from "@/features/tasks/api/use-create-task";
-import { createTaskSchema } from "@/features/tasks//schema";
+import { updateTaskSchema } from "@/features/tasks//schema";
 import {
   Select,
   SelectContent,
@@ -28,28 +27,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import MemberAvatar from "@/features/member/components/members-avatar";
-import { TaskStatus } from "@/features/tasks/types";
+import { Task, TaskStatus } from "@/features/tasks/types";
 import ProjectAvatar from "@/features/projects/components/project-avatar";
 import DatePicker from "@/components/date-picker";
+import { useUpdateTask } from "@/features/tasks/api/use-update-task";
 
 interface Props {
   onCancle?: () => void;
   projectOptions: { id: string; name: string; imageUrl: string }[];
   memberOptions: { id: string; name: string }[];
+  initialValues: Task
 }
 
-const CreateTaskForm = ({ onCancle, memberOptions, projectOptions }: Props) => {
+const EditTaskForm = ({ onCancle, memberOptions, projectOptions, initialValues }: Props) => {
   const workspaceId = useWorkspaceId();
-  const { mutate: createTaskHandle, isPending } = useCreateTask();
-  const form = useForm<z.infer<typeof createTaskSchema>>({
-    resolver: zodResolver(createTaskSchema),
+  const { mutate: updateTaskHandle, isPending } = useUpdateTask();
+  const form = useForm<z.infer<typeof updateTaskSchema>>({
+    resolver: zodResolver(updateTaskSchema.omit({ workspaceId: true, description: true })),
     defaultValues: {
-      workspaceId,
+      ...initialValues,
+      dueDate: initialValues.dueDate ? new Date(initialValues.dueDate) : undefined,
+      status: initialValues.status as TaskStatus 
     },
   });
-  const onSubmitHandle = (values: z.infer<typeof createTaskSchema>) => {
-    createTaskHandle(
+  const onSubmitHandle = (values: z.infer<typeof updateTaskSchema>) => {
+    updateTaskHandle(
       {
+        param: {
+          taskId: initialValues.$id,
+        },
         json: {
           ...values,
           workspaceId,
@@ -66,7 +72,7 @@ const CreateTaskForm = ({ onCancle, memberOptions, projectOptions }: Props) => {
   return (
     <Card className="w-full h-full border-none shadow-none">
       <CardHeader className="flex p-7">
-        <CardTitle className="text-xl font-bold">Create a new Task</CardTitle>
+        <CardTitle className="text-xl font-bold">Edit Task</CardTitle>
       </CardHeader>
       <div className="p-7">
         <DottedSepeartor />
@@ -216,7 +222,7 @@ const CreateTaskForm = ({ onCancle, memberOptions, projectOptions }: Props) => {
                 {isPending ? (
                   <Loader2Icon className="size-4 animate-spin" />
                 ) : (
-                  "Create Task"
+                  "Edit Task"
                 )}
               </Button>
             </div>
@@ -227,4 +233,4 @@ const CreateTaskForm = ({ onCancle, memberOptions, projectOptions }: Props) => {
   );
 };
 
-export default CreateTaskForm;
+export default EditTaskForm;

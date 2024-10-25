@@ -5,6 +5,7 @@ export const getCurrent = async () => {
     const { account } = await createSessionClient();
     return await account.get();
   } catch {
-    throw new Error("Unauthorized");
+    return null;
+    // throw new Error("Unauthorized");
   }
 };

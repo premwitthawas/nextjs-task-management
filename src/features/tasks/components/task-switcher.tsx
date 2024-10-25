@@ -12,6 +12,8 @@ import DataFilter from "@/features/tasks/components/data-filter";
 import { useTaskFilters } from "@/features/tasks/hooks/use-filter-task";
 import { DataTable } from "@/features/tasks/components/data-table";
 import { columns } from "@/features/tasks/components/columns";
+import { DndKanban } from "@/features/tasks/components/dnd-kanban";
+import { Task } from "@/features/tasks/types";
 const TaskSwitcher = () => {
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
@@ -66,7 +68,7 @@ const TaskSwitcher = () => {
               <DataTable columns={columns} data={tasks?.documents ?? []} />
             </TabsContent>
             <TabsContent value="kanban" className="mt-0">
-              <pre>{JSON.stringify(tasks, null, 2)}</pre>
+              <DndKanban data={(tasks?.documents as Task[]) ?? []} />
             </TabsContent>
             <TabsContent value="carlendar" className="mt-0">
               <pre>{JSON.stringify(tasks, null, 2)}</pre>
