@@ -11,7 +11,7 @@ interface Props {
 
 const MemberAvatar = ({ className, name, fallbackClassName }: Props) => {
     return (
-        <Avatar className={cn('size-10 rounded-md', className)}>
+        <Avatar className={cn('size-5 rounded-md relative overflow-hidden', className)}>
             <AvatarFallback className={cn('bg-neutral-200 font-medium text-neutral-500 flex items-center justify-center',
                 fallbackClassName)}>
                 {name.charAt(0).toUpperCase()}
