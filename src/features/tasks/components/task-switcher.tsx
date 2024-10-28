@@ -16,7 +16,12 @@ import { DndKanban } from "@/features/tasks/components/dnd-kanban";
 import { Task, TaskStatus } from "@/features/tasks/types";
 import { useBulkupdateTask } from "@/features/tasks/api/use-bulkupdate-task";
 import { DataCalendar } from "@/features/tasks/components/data-calendar";
-const TaskSwitcher = () => {
+
+interface Props {
+  hideProjectFilter?: boolean;
+};
+
+const TaskSwitcher = ({ hideProjectFilter }: Props) => {
   const [view, setView] = useQueryState("task-view", {
     defaultValue: "table",
   });
@@ -69,7 +74,7 @@ const TaskSwitcher = () => {
         </div>
         <DottedSepeartor className="my-4" />
         {/* FILLTER */}
-        <DataFilter />
+        <DataFilter hideProjectFilter={hideProjectFilter} />
         <DottedSepeartor className="my-4" />
         {isLoadingTask ? (
           <div className="w-full border rounded-lg h-[200px] flex flex-col items-center justify-center">
