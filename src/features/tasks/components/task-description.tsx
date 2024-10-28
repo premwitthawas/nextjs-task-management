@@ -20,6 +20,10 @@ export const TaskDescription = ({ task }: Props) => {
             json: {
                 description: value
             }
+        }, {
+            onSuccess: () => {
+                setIsEditing(false)
+            }
         })
     }
     return (
@@ -51,9 +55,9 @@ export const TaskDescription = ({ task }: Props) => {
                             disabled={isPending}
                         />
                         <Button size={'sm'}
-                        className='w-fit ml-auto'
-                        onClick={()=>handleUpdateDescription()}
-                        disabled={isPending}
+                            className='w-fit ml-auto'
+                            onClick={() => handleUpdateDescription()}
+                            disabled={isPending}
                         >
                             {isPending ? <Loader2Icon className='animate-spin size-4' /> : "Save Changes"}
                         </Button>

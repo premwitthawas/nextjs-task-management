@@ -59,12 +59,7 @@ const EditProjectForm = ({ onCancle, initialValues }: Props) => {
         filename: values.image instanceof File ? values.image.name : "",
       },
     };
-    updateProjectHandle(data, {
-      onSuccess: () => {
-        form.reset();
-        router.push(`/workspaces/${initialValues.workspaceId}/projects/${initialValues.$id}`)
-      },
-    });
+    updateProjectHandle(data);
   };
   const handleImageChage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

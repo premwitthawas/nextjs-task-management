@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { updateWorkSpacesSchema } from "@/features/workspaces/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DottedSepeartor from "@/components/dotted-separator";
@@ -57,7 +56,7 @@ const EditWorkSpaceForm = ({ onCancle, initialValues }: Props) => {
       ...initialValues,
       image: initialValues.imageUrl ?? "",
     },
-    resolver: zodResolver(updateWorkSpacesSchema),
+    // resolver: zodResolver(updateWorkSpacesSchema),
   });
   const onSubmitHandle = (values: z.infer<typeof updateWorkSpacesSchema>) => {
     const data = {
@@ -70,11 +69,7 @@ const EditWorkSpaceForm = ({ onCancle, initialValues }: Props) => {
         filename: values.image instanceof File ? values.image.name : "",
       },
     };
-    updateWorkspaceHandle(data, {
-      onSuccess: () => {
-        form.reset();
-      },
-    });
+    updateWorkspaceHandle(data);
   };
   const handleImageChage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
