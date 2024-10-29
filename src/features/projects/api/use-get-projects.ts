@@ -1,9 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/lib/rpc";
+import { InferResponseType } from "hono";
 
 interface UseGetProjectsProps {
   workspaceId: string;
 }
+
+export type GetProjectsResponseType = InferResponseType<
+  typeof client.api.projects.$get,
+  200
+>;
 
 export const useGetProjects = ({ workspaceId }: UseGetProjectsProps) => {
   const query = useQuery({

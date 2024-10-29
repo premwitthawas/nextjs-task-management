@@ -2,7 +2,7 @@
 
 import { PageError } from "@/components/page-error";
 import { PageLoader } from "@/components/page-loader";
-import { useGetWorkspaceByIdInfo } from "@/features/workspaces/api/use-get-workspace-by-id copy";
+import { useGetWorkspaceByIdInfo } from "@/features/workspaces/api/use-get-workspace-by-id-info";
 import JoinWorkspaceForm from "@/features/workspaces/components/join-workspace-form";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 
